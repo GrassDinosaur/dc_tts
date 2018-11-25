@@ -32,16 +32,20 @@ class Hyperparams:
     attention_win_size = 3
 
     # data
-    data = "/data/private/voice/LJSpeech-1.0"
+    data = "/home/bkjumpp/tacotron/en_UK/by_book/female/elizabeth_klett/jane_eyre"
+    data_type = "keithito/tacotron"
+    preprocessing_path = "/home/bkjumpp/tacotron/training"
     # data = "/data/private/voice/kate"
     test_data = 'harvard_sentences.txt'
     vocab = "PE abcdefghijklmnopqrstuvwxyz'.?" # P: Padding, E: EOS.
-    max_N = 180 # Maximum number of characters.
-    max_T = 210 # Maximum number of mel frames.
+    max_N = 100 # Maximum number of characters.
+    max_T = 100 # Maximum number of mel frames.
 
     # training scheme
     lr = 0.001 # Initial learning rate.
     logdir = "logdir/LJ01"
     sampledir = 'samples'
-    B = 32 # batch size
+    B = 10 # batch size, ideally 32
     num_iterations = 2000000
+    save_epochs = 100
+    epochs = 100
