@@ -50,7 +50,7 @@ def load_data(mode="train"):
             lines = codecs.open(transcript, 'r', 'utf-8').readlines()
             nth_line = 0
             for line in lines:
-                if nth_line < 3000:
+                if nth_line < 30:
                     fname, _, text = line.strip().split("|")
 
                     fpath = os.path.join(hp.data, "wavs", fname + ".wav")
