@@ -147,14 +147,14 @@ if __name__ == '__main__':
             for _ in tqdm(range(g.num_batch), total=g.num_batch, ncols=70, leave=False, unit='b'):
                 gs, _ = sess.run([g.global_step, g.train_op])
 
-                # Write checkpoint files at every 1k steps
-                if gs % 1000 == 0:
-                    sv.saver.save(sess, logdir + '/model_gs_{}'.format(str(gs // 1000).zfill(3) + "k"))
+                # Write checkpoint files at every 10 steps
+                if gs % 10 == 0:
+                    sv.saver.save(sess, logdir + '/model_gs_{}'.format(str(gs).zfill(3) + ""))
 
                     if num==1:
                         # plot alignment
                         alignments = sess.run(g.alignments)
-                        plot_alignment(alignments[0], str(gs // 1000).zfill(3) + "k", logdir)
+                        plot_alignment(alignments[0], str(gs).zfill(3) + "", logdir)
 
                 # break
                 if gs > hp.num_iterations: break
