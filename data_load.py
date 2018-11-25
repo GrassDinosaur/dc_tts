@@ -16,6 +16,8 @@ import re
 import os
 import unicodedata
 
+index = 0
+
 def load_vocab():
     char2idx = {char: idx for idx, char in enumerate(hp.vocab)}
     idx2char = {idx: char for idx, char in enumerate(hp.vocab)}
@@ -39,22 +41,28 @@ def load_data(mode="train"):
     char2idx, idx2char = load_vocab()
 
     if mode=="train":
-        if "LJ" in hp.data:
+        if "en_UK" in hp.data:
             # Parse
+            # TODO: implement multiple books and language data for M-AILABS dataset
+            # TODO: add a limit for how much text is used
             fpaths, text_lengths, texts = [], [], []
-            transcript = os.path.join(hp.data, 'transcript.csv')
+            transcript = os.path.join(hp.data, 'metadata.csv')
             lines = codecs.open(transcript, 'r', 'utf-8').readlines()
+            nth_line = 0
             for line in lines:
-                fname, _, text = line.strip().split("|")
+                if nth_line < 3000:
+                    fname, _, text = line.strip().split("|")
 
-                fpath = os.path.join(hp.data, "wavs", fname + ".wav")
-                fpaths.append(fpath)
+                    fpath = os.path.join(hp.data, "wavs", fname + ".wav")
 
-                text = text_normalize(text) + "E"  # E: EOS
-                text = [char2idx[char] for char in text]
-                text_lengths.append(len(text))
-                texts.append(np.array(text, np.int32).tostring())
+                    if (os.path.exists(fpath)): # M-AILABS errors in dataset
+                        fpaths.append(fpath)
+                        text = text_normalize(text) + "E"  # E: EOS
+                        text = [char2idx[char] for char in text]
+                        text_lengths.append(len(text))
+                        texts.append(np.array(text, np.int32).tostring())
 
+                    nth_line += 1
             return fpaths, text_lengths, texts
         else: # nick or kate
             # Parse
@@ -104,8 +112,8 @@ def get_batch():
         if hp.prepro:
             def _load_spectrograms(fpath):
                 fname = os.path.basename(fpath)
-                mel = "mels/{}".format(fname.replace("wav", "npy"))
-                mag = "mags/{}".format(fname.replace("wav", "npy"))
+                mel = "mels/{}".format(fname.decode("utf-8").replace("wav", "npy"))
+                mag = "mags/{}".format(fname.decode("utf-8").replace("wav", "npy"))
                 return fname, np.load(mel), np.load(mag)
 
             fname, mel, mag = tf.py_func(_load_spectrograms, [fpath], [tf.string, tf.float32, tf.float32])
