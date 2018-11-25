@@ -27,7 +27,7 @@ for fpath in tqdm.tqdm(fpaths):
 
         np.save("mels/{}".format(fname.replace("wav", "npy")), mel)
         np.save("mags/{}".format(fname.replace("wav", "npy")), mag)
-    else
+    else:
         break
 
 
